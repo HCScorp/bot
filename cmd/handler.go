@@ -16,12 +16,12 @@ var (
 	AH string = "ah"
 )
 
-func (h Handler) Handle(s *discordgo.Session, m *discordgo.MessageCreate) (err error) {
+func (h Handler) Handle(s *discordgo.Session, m *discordgo.MessageCreate) error {
 
 	// Ignore all messages created by the bot itself
 	// This isn't required in this specific example but it's a good practice.
 	if m.Author.ID == s.State.User.ID {
-		return
+		return nil
 	}
 
 	// Checks if the message contains "ah"
@@ -32,14 +32,14 @@ func (h Handler) Handle(s *discordgo.Session, m *discordgo.MessageCreate) (err e
 
 		if err != nil {
 			// Could not find channel.
-			return
+			return err
 		}
 
 		// Find the guild for that channel.
 		g, err := s.State.Guild(c.GuildID)
 		if err != nil {
 			// Could not find guild.
-			return
+			return err
 		}
 
 		// Look for the message sender in that guild's current voice states.
@@ -50,8 +50,10 @@ func (h Handler) Handle(s *discordgo.Session, m *discordgo.MessageCreate) (err e
 					fmt.Println("Error playing sound:", err)
 				}
 
-				return
+				return err
 			}
 		}
 	}
+
+	return nil
 }
