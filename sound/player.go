@@ -6,7 +6,7 @@ import (
 )
 
 // From https://github.com/bwmarrin/discordgo/blob/master/examples/airhorn/main.go
-func PlaySound(s *discordgo.Session, guildID, channelID string, sound File) (err error) {
+func PlaySound(s *discordgo.Session, guildID, channelID string, file string) (err error) {
 
 	// Join the provided voice channel.
 	vc, err := s.ChannelVoiceJoin(guildID, channelID, false, true)
@@ -18,7 +18,7 @@ func PlaySound(s *discordgo.Session, guildID, channelID string, sound File) (err
 	// Start speaking.
 	vc.Speaking(true)
 
-	dgvoice.PlayAudioFile(vc, sound.FileName, make(chan bool))
+	dgvoice.PlayAudioFile(vc, file, make(chan bool))
 	// Stop speaking
 	vc.Speaking(false)
 

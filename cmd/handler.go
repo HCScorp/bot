@@ -1,6 +1,6 @@
 package cmd
 
-import (
+/*import (
 	"fmt"
 	"strings"
 
@@ -12,12 +12,10 @@ import (
 type Handler struct {
 	Sounds map[string]*sound.File
 }
+*/
 
-var (
-	AH string = "ah"
-)
 
-func (h Handler) Handle(s *discordgo.Session, m *discordgo.MessageCreate) {
+/*func (h Handler) Handle(s *discordgo.Session, m *discordgo.MessageCreate) {
 	logrus.Info(*h.Sounds[AH])
 	// Ignore all messages created by the bot itself
 	// This isn't required in this specific example but it's a good practice.
@@ -61,3 +59,4 @@ func (h Handler) Handle(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 	}
 }
+*/
