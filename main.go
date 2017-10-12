@@ -20,7 +20,8 @@ func ready(s *discordgo.Session, event *discordgo.Ready) {
 }
 
 func main() {
-	discord, err := discordgo.New(os.Getenv("TOKEN"))
+	//discord, err := discordgo.New("Bot " + os.Getenv("TOKEN"))
+	discord, err := discordgo.New("Bot MzY4MDUwODE2NzgwODYxNDQw.DMEpAA.Tfd-Evoc0zayXxjOoF28CxpDimU")
 
 	if err != nil {
 		logrus.Fatal(err.Error())
@@ -42,6 +43,7 @@ func main() {
 
 	// Open the websocket and begin listening.
 	err = discord.Open()
+
 	if err != nil {
 		logrus.Fatal("Error opening Discord session: ", err)
 	}

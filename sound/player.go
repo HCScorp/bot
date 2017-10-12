@@ -2,6 +2,7 @@ package sound
 
 import (
 	"github.com/bwmarrin/discordgo"
+	"github.com/bwmarrin/dgvoice"
 )
 
 // From https://github.com/bwmarrin/discordgo/blob/master/examples/airhorn/main.go
@@ -17,11 +18,7 @@ func PlaySound(s *discordgo.Session, guildID, channelID string, sound File) (err
 	// Start speaking.
 	vc.Speaking(true)
 
-	// Send the buffer data.
-	for _, buff := range sound.Content {
-		vc.OpusSend <- buff
-	}
-
+	dgvoice.PlayAudioFile(vc, sound.FileName, make(chan bool))
 	// Stop speaking
 	vc.Speaking(false)
 
