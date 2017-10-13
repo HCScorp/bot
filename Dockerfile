@@ -11,7 +11,7 @@ RUN set -x && \
 
 RUN GOOS=linux go build -installsuffix cgo -o bot .
 
-# Building the Dashblue image
+# Building the Bot image
 FROM ubuntu
 LABEL maintainer "Thomas MUNOZ <thomas.munoz30@gmail.com>"
 
@@ -30,5 +30,4 @@ COPY sounds/ /root/sounds/
 # Copy bot executable from builder
 COPY --from=builder /go/src/github.com/thomasmunoz13/bot/bot .
 
-#CMD ["./bot"]
 ENTRYPOINT ["./bot"]
