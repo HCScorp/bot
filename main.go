@@ -5,15 +5,14 @@ package main
 // Import all Go packages required for this file.
 import (
 	"flag"
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
+	"github.com/HCScorp/bot/cmd"
+	"github.com/HCScorp/bot/mux"
 	"github.com/bwmarrin/discordgo"
-	"github.com/thomasmunoz13/bot/x/mux"
-	"github.com/thomasmunoz13/bot/cmd"
 )
 
 // Version is a constant that stores the Disgord version information.
@@ -27,7 +26,6 @@ var Session, _ = discordgo.New()
 // Router is registered as a global variable to allow easy access to the
 // multiplexer throughout the bot.
 var Router = mux.New()
-
 
 // Read in all configuration options from both environment variables and
 // command line arguments.
@@ -43,15 +41,6 @@ func main() {
 
 	// Declare any variables needed later.
 	var err error
-
-	// Print out a fancy logo!
-	fmt.Printf(` 
-	________  .__                               .___
-	\______ \ |__| ______ ____   ___________  __| _/
-	||    |  \|  |/  ___// ___\ /  _ \_  __ \/ __ | 
-	||    '   \  |\___ \/ /_/  >  <_> )  | \/ /_/ | 
-	||______  /__/____  >___  / \____/|__|  \____ | 
-	\_______\/        \/_____/   %-16s\/`+"\n\n", Version)
 
 	// Parse command line arguments
 	flag.Parse()
@@ -72,7 +61,6 @@ func main() {
 	// Open a websocket connection to Discord
 	err = Session.Open()
 
-
 	// Register the mux OnMessageCreate handler that listens for and processes
 	// all messages received.
 	Session.AddHandler(Router.OnMessageCreate)
@@ -85,11 +73,8 @@ func main() {
 		log.Printf("error opening connection to Discord, %s\n", err)
 	}
 
-
 	// Wait for a CTRL-C
 	log.Printf(`Now running. Press CTRL-C to exit.`)
-
-
 
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)

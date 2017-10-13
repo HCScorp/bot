@@ -1,11 +1,12 @@
 package cmd
 
 import (
+	"github.com/HCScorp/bot/sound"
+	"github.com/HCScorp/bot/mux"
 	"github.com/bwmarrin/discordgo"
-	"github.com/thomasmunoz13/bot/x/mux"
-	"github.com/thomasmunoz13/bot/sound"
 	"github.com/sirupsen/logrus"
 )
+
 var Ah mux.HandlerFunc = func(s *discordgo.Session, msg *discordgo.Message, ctx *mux.Context) {
 	// Find the guild for that channel
 	g, err := s.State.Guild(ctx.GuildID)
@@ -15,7 +16,6 @@ var Ah mux.HandlerFunc = func(s *discordgo.Session, msg *discordgo.Message, ctx 
 		logrus.Error(err.Error())
 		return
 	}
-
 
 	// Look for the message sender in that guild's current voice states.
 	for _, vs := range g.VoiceStates {

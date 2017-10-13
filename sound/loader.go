@@ -75,7 +75,6 @@ func LoadFile(name string, toConvert bool) (*File, error) {
 				return nil, err
 			}
 
-
 			return NewFile(name, buf), nil
 		}
 
