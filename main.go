@@ -63,7 +63,7 @@ func main() {
 	}
 
 	// Verify the Token is valid and grab user information
-	Session.State.User, err = Session.User("Ah!")
+	Session.State.User, err = Session.User("HCScorp-Bot")
 
 	if err != nil {
 		log.Printf("error fetching user information, %s\n", err)
