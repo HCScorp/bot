@@ -17,7 +17,7 @@ LABEL maintainer "Thomas MUNOZ <thomas.munoz30@gmail.com>"
 
 USER root
 
-ENV TOKEN="MzY4MDUwODE2NzgwODYxNDQw.DMEpAA.Tfd-Evoc0zayXxjOoF28CxpDimU"
+ENV TOKEN="my-token"
 
 RUN apt-get -y update \
     && apt-get -y install ffmpeg \
