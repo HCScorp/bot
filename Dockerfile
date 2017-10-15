@@ -1,8 +1,8 @@
 # Using Multi Stage Build to first build the program
-FROM golang:1.9 as builder
-LABEL maintainer "Thomas MUNOZ <thomas.munoz30@gmail.com>"
+FROM golang:1.9.1 as builder
+LABEL maintainer = "Thomas MUNOZ <thomas.munoz30@gmail.com>"
 
-WORKDIR /go/src/github.com/thomasmunoz13/bot
+WORKDIR /go/src/github.com/HCScorp/bot
 
 COPY . .
 
@@ -13,7 +13,7 @@ RUN GOOS=linux go build -installsuffix cgo -o bot .
 
 # Building the Bot image
 FROM ubuntu
-LABEL maintainer "Thomas MUNOZ <thomas.munoz30@gmail.com>"
+LABEL maintainer = "Thomas MUNOZ <thomas.munoz30@gmail.com>"
 
 USER root
 
@@ -28,6 +28,6 @@ WORKDIR /root/
 COPY sounds/ /root/sounds/
 
 # Copy bot executable from builder
-COPY --from=builder /go/src/github.com/thomasmunoz13/bot/bot .
+COPY --from=builder /go/src/github.com/HCScorp/bot/bot .
 
 ENTRYPOINT ["./bot"]
