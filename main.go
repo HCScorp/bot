@@ -31,7 +31,7 @@ func main() {
 	args := merge(argsEnvVar, argsCli)
 
 	// Set up
-	hcsbot, err := bot.New(args.token, "HCScorp-BOT")
+	hcsbot, err := bot.New(args.token)
 	if err != nil {
 		log.Errorln(err)
 		return
