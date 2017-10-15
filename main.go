@@ -1,87 +1,92 @@
-// Declare this file to be part of the main package so it can be compiled into
-// an executable.
 package main
 
-// Import all Go packages required for this file.
 import (
 	"flag"
-	"log"
+
 	"os"
 	"os/signal"
 	"syscall"
 
-	"github.com/HCScorp/bot/cmd"
-	"github.com/HCScorp/bot/mux"
-	"github.com/bwmarrin/discordgo"
+	"github.com/HCScorp/bot/handlers"
+	"github.com/LorisFriedel/go-bot/bot"
+	"github.com/LorisFriedel/go-bot/router"
+	log "github.com/sirupsen/logrus"
 )
 
-// Version is a constant that stores the Disgord version information.
-const Version = "v0.0.0-alpha"
+type Arguments struct {
+	token string
+}
 
-// Session is declared in the global space so it can be easily used
-// throughout this program.
-// In this use case, there is no error that would be returned.
-var Session, _ = discordgo.New()
+var argToken string
 
-// Router is registered as a global variable to allow easy access to the
-// multiplexer throughout the bot.
-var Router = mux.New()
-
-// Read in all configuration options from both environment variables and
-// command line arguments.
 func init() {
-	// Discord Authentication Token
-	Session.Token = os.Getenv("TOKEN")
-	if Session.Token == "" {
-		flag.StringVar(&Session.Token, "t", "", "Discord Authentication Token")
-	}
+	flag.StringVar(&argToken, "t", "", "Discord Authentication Token")
 }
 
 func main() {
-
-	// Declare any variables needed later.
-	var err error
-
-	// Parse command line arguments
+	// Parse arguments
 	flag.Parse()
+	argsCli := parseCli()
+	argsEnvVar := parsEnvVar()
+	args := merge(argsEnvVar, argsCli)
 
-	// Verify a Token was provided
-	if Session.Token == "" {
-		log.Println("You must provide a Discord authentication token.")
+	// Set up
+	hcsbot, err := bot.New(args.token)
+	if err != nil {
+		log.Errorln(err)
 		return
 	}
 
-	// Verify the Token is valid and grab user information
-	Session.State.User, err = Session.User("HCScorp-Bot")
-
+	// TODO deport route creation
+	ahRoute, err := router.RouteBuilder.Contains("ah").Handler(handlers.NewAh()).Build()
 	if err != nil {
-		log.Printf("error fetching user information, %s\n", err)
+		log.Errorln(err)
+		return
 	}
+	hcsbot.Router.AddRoute("ah", ahRoute)
 
-	// Open a websocket connection to Discord
-	err = Session.Open()
+	log.Infoln("The HCS bot is running. Press CTRL-C to exit.")
+	waitToBeMurdered()
 
-	// Register the mux OnMessageCreate handler that listens for and processes
-	// all messages received.
-	Session.AddHandler(Router.OnMessageCreate)
-
-	// Register the build-in help command.
-	Router.Route("help", "Display this message.", Router.Help)
-	Router.Route("ah", "Ah ", cmd.Ah)
-
+	// Clean up
+	err = hcsbot.Stop()
 	if err != nil {
-		log.Printf("error opening connection to Discord, %s\n", err)
+		log.Errorln(err)
+		return
 	}
+}
 
-	// Wait for a CTRL-C
-	log.Printf(`Now running. Press CTRL-C to exit.`)
-
+// Wait for a CTRL-C
+func waitToBeMurdered() {
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
+}
 
-	// Clean up
-	Session.Close()
+///////////////////////////////////////////
+//////////////// Parsing //////////////////
+///////////////////////////////////////////
 
-	// Exit Normally.
+func parsEnvVar() *Arguments {
+	return &Arguments{
+		token: os.Getenv("TOKEN"),
+	}
+}
+
+func parseCli() *Arguments {
+	return &Arguments{
+		token: argToken,
+	}
+}
+
+// merge aggregate arguments from every given sources. Override are made regarding the method arguments order.
+// (the last one can override the first one but not the other way round)
+func merge(argsList ...*Arguments) *Arguments {
+	result := &Arguments{}
+	for _, args := range argsList {
+		if args.token != "" {
+			result.token = args.token
+		}
+	}
+	return result
 }

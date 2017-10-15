@@ -1,5 +1,5 @@
 # Using Multi Stage Build to first build the program
-FROM golang:1.9 as builder
+FROM golang:1.9.1 as builder
 LABEL maintainer "Thomas MUNOZ <thomas.munoz30@gmail.com>"
 
 WORKDIR /go/src/github.com/thomasmunoz13/bot
